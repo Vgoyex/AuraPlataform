@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+a{
+    text-decoration:none;
+}
+
+.container_login {
+    background-color: rgb(240, 228, 228);
+    height: 65vh;
+    margin-bottom: 3px;
+    display: flex;
+    justify-content: flex-end; /* Alinha o formulário à direita */
+    padding-right: 20px; /* Espaçamento para não ficar colado na borda */
+    a{
+        text-decoration:none;
+        text-align:center;
+    }
+}
+
+.container_form {
+    background-color: white;
+    height: 520px;
+    width: 500px;
+    /* border: 2px solid red; */
+    box-shadow: 1px 3px 3px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column; /* Permite o alinhamento vertical dos elementos */
+    justify-content: center; /* Centraliza o conteúdo verticalmente */
+    margin-right: 200px;
+    margin-top:30px;
+    padding: 20px; /* Espaçamento interno para afastar o conteúdo da borda */
+    button{
+        margin-top:10px;
+        width: 450px;
+    }
+}
+
+.extra_itens{
+  text-align: center;
+  display:flex;
+  justify-content: space-between;
+  margin:10px;
+}
+
+.container_form input {
+    border-radius: 14px;
+    max-width: 100%;
+    max-height: 100%;
+    width: 450px; /* Faz o input ocupar toda a largura do container */
+    text-align: left; /* Alinha o texto dentro do input à esquerda */
+    padding: 10px; /* Adiciona espaçamento interno */
+    box-sizing: border-box; /* Garante que padding seja incluído na largura total */;
+    
+}
+
+.social_login{
+    margin-top:10px;
+    align-items: center;
+    text-align: center;
+    ul{
+        list-style: none;
+    }
+    li{
+        height: 30px;
+        box-shadow: 1px 1px 1px rgb(92, 87, 87);
+        border-radius:7px;
+    }
+
+}
+
+.container_feed{
+    display: flex;
+    justify-content: center;
+
+    img{
+        max-width: 40rem;
+        max-height: 40rem;
+    }
+
+    ul{
+        list-style: none;
+    }
+}
+
+.card{
+    margin-top: 2rem;
+    box-shadow: 1px 3px 3px rgb(92, 87, 87);
+
+}
+
+.card-text{
+    max-width: 600px;
+}
+
+.button_feed {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+}
+
+.container_footer{
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid black;
+}
+
+.footer_row{
+    margin-inline: 50px;
+    margin: 1rem;
+    li{
+        font-family: "Roboto Condensed", sans-serif;
+        font-optical-sizing: auto;
+        font-style: normal;
+        list-style: none;
+        margin-bottom: 15px;
+    }
+}
