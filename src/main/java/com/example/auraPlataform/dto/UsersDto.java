@@ -8,3 +8,6 @@ public record UsersDto(@NotBlank String userName,
 @NotBlank String userPassword){
 
 }
+
+// userNickName; // Nome de perfil
+// userName; // Vai ser o @

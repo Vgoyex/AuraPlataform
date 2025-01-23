@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>salesPlataform</artifactId>
+	<artifactId>auraPlataform</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>salesPlataform</name>
+	<name>auraPlataform</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -74,6 +74,13 @@
 			<artifactId>jakarta.validation-api</artifactId>
 			<version>3.0.0</version> <!-- ou outra versão compatível -->
 		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+
 		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-client</artifactId>
