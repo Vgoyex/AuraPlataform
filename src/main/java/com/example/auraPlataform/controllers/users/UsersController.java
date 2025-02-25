@@ -123,5 +123,16 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.OK).body("Usuário excluído com sucesso");
     }
 
+    // Delete by UserName
+    @DeleteMapping("/aura/users/{}")
+    public ResponseEntity<Object> deleteUserByUserName(@PathVariable(value="userName") String userName){
+        Optional<UsersModel> userObj = usersRepository.findByUserName(userName);
+        if(userObj.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
+        }
+        usersRepository.delete(userObj.get());   
+
+        return ResponseEntity.status(HttpStatus.OK).body("Usuário excluído com sucesso");
+    }
 
 }
