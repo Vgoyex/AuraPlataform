@@ -1,5 +1,6 @@
 package com.example.auraPlataform.controllers.users;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -134,5 +135,18 @@ public class UsersController {
 
         return ResponseEntity.status(HttpStatus.OK).body("Usuário excluído com sucesso");
     }
+
+    //! TESTAR
+    // @GetMapping("aura/teste_cmd")
+    // public ResponseEntity<Object> ffprobe(String nome_do_arquivo){
+    //     try{
+
+    //         Process process = Runtime.getRuntime().exec("cmd /c ffprog " + nome_do_arquivo);
+    //         process.waitFor();
+    //     }catch(IOException | InterruptedException  err){
+    //         err.printStackTrace();
+    //     }
+    //     return ResponseEntity.status(HttpStatus.OK).body("Usuário excluído com sucesso");
+    // }
 
 }

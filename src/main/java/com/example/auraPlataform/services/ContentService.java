@@ -11,9 +11,9 @@ import com.example.auraPlataform.repositories.ContentRepository;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-
-
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -111,4 +111,22 @@ public class ContentService {
         return "";
     }
     
+    public String getVideoMetaData(String fileName){
+        if(fileName == null){
+            return "Empty file name!";
+        }
+
+        try{
+            String tt = "cmd /c ffprobe " + fileName + " -show_streams -show_format -print_format json";
+            Process process = Runtime.getRuntime().exec("cmd /c ffprobe " + fileName + " -show_streams -show_format -print_format json");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String output = reader.readLine(); // Captura a saída do ffprobe
+            
+            process.waitFor();
+        }catch(IOException | InterruptedException  err){
+            err.printStackTrace();
+        }
+        
+        return "";
+    }
 }
