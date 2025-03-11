@@ -10,7 +10,6 @@ import java.util.UUID;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +25,8 @@ import com.example.auraPlataform.dto.ContentDto;
 import com.example.auraPlataform.models.ContentModel;
 import com.example.auraPlataform.repositories.ContentRepository;
 import com.example.auraPlataform.services.ContentService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.validation.Valid;
 
@@ -188,10 +189,15 @@ public class ContentController {
     //! Testar pegar metadados do vídeo
     @GetMapping("/aura/teste_service")
     public ResponseEntity<Object> testeTTT() {
-        Object teste = contentService.getVideoMetaData("");
-        if(teste == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro");
+        //teste passando o caminho do arquivo
+        //tem que passar o arquivo no banco e fazer o service de outra maneira
+        Object videoData = contentService.getVideoMetaData("\"C:\\Users\\Fernando\\Videos\\toma jack.mp4\"");
+        if(videoData != null){
+            String json = videoData.toString();
+            // System.out.println("\n\n"+ json + "\n\n");
+            return ResponseEntity.status(HttpStatus.OK).body(json);
         }
-        return ResponseEntity.status(HttpStatus.OK).body("Arquivo excluído com sucesso.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro.");
+        
     }
 }

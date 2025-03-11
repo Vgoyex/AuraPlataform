@@ -9,6 +9,8 @@ import com.example.auraPlataform.dto.ContentDto;
 import com.example.auraPlataform.models.ContentModel;
 import com.example.auraPlataform.repositories.ContentRepository;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.io.BufferedReader;
@@ -111,22 +113,34 @@ public class ContentService {
         return "";
     }
     
-    public String getVideoMetaData(String fileName){
+    public JsonNode getVideoMetaData(String fileName){
         if(fileName == null){
-            return "Empty file name!";
+            // Nome do arquivo inválido/não existe.
+            return null;
         }
-
         try{
-            String tt = "cmd /c ffprobe " + fileName + " -show_streams -show_format -print_format json";
-            Process process = Runtime.getRuntime().exec("cmd /c ffprobe " + fileName + " -show_streams -show_format -print_format json");
+            String cmdCommand = "ffprobe " + fileName + " -show_streams -show_format -print_format json";
+            String cmdTeste = "dir";
+            Process process = Runtime.getRuntime().exec(cmdCommand);
+            
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String output = reader.readLine(); // Captura a saída do ffprobe
+            StringBuilder output = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
             
             process.waitFor();
+            process.getOutputStream().close();
+            
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            // return objectMapper.readTree(output.toString());
+            JsonNode jsonNode = objectMapper.readTree(output.toString());
+            return jsonNode;
         }catch(IOException | InterruptedException  err){
             err.printStackTrace();
+            return null;
         }
-        
-        return "";
     }
 }
