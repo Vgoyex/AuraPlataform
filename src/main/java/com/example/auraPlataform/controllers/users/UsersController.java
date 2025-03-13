@@ -124,7 +124,7 @@ public class UsersController {
     }
 
     // Delete by UserName
-    @DeleteMapping("/aura/users/{}")
+    @DeleteMapping("/aura/users/{userName}")
     public ResponseEntity<Object> deleteUserByUserName(@PathVariable(value="userName") String userName){
         Optional<UsersModel> userObj = usersRepository.findByUserName(userName);
         if(userObj.isEmpty()){

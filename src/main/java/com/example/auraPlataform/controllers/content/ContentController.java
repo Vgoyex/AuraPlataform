@@ -25,9 +25,6 @@ import com.example.auraPlataform.dto.ContentDto;
 import com.example.auraPlataform.models.ContentModel;
 import com.example.auraPlataform.repositories.ContentRepository;
 import com.example.auraPlataform.services.ContentService;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import jakarta.validation.Valid;
 
 @RestController
