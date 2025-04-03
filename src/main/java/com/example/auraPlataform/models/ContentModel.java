@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
 @Entity
@@ -37,10 +38,12 @@ public class ContentModel {
 
     private String contentEmailUserPost;
     
-    @Column(name="file_base64", columnDefinition = "LONGBLOB")
+    @Lob
+    @Column(name="file_base64", columnDefinition = "BYTEA")
     private byte[] base64String;
     
-    @Column(name = "file", columnDefinition = "LONGBLOB")
+    @Lob
+    @Column(name = "file", columnDefinition = "BYTEA")
     private byte[] contentFileBytes; // tipo de dado que será convertido para base64
     
 

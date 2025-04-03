@@ -65,7 +65,7 @@ public class UsersController {
     }
 
     @PostMapping("/aura/users")
-    public ResponseEntity<Object> postUser(@RequestBody @Valid UsersDto usersDto){
+    public ResponseEntity<Object> postUser(@RequestBody @Valid CompleteUserDto usersDto){
         //! Fazer lógica para salvar a senha
 
         var usersModel = new UsersModel();
