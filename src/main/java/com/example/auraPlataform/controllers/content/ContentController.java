@@ -146,6 +146,7 @@ public class ContentController {
         } else {
             for (ContentModel file : contentFiles) {
                 ContentModel contentFileToSave = new ContentModel();
+                contentFileToSave.setBase64String(contentService.convertToBase64(file.getContentFileBytes()));
                 contentFileToSave.setContentName(contentDto.contentName());
                 contentFileToSave.setContentFileBytes(file.getContentFileBytes());
                 contentFileToSave.setContentDescription(contentDto.contentDescription());

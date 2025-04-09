@@ -38,12 +38,11 @@ public class ContentModel {
 
     private String contentEmailUserPost;
     
-    @Lob
-    @Column(name="file_base64", columnDefinition = "BYTEA")
-    private byte[] base64String;
+
+    @Column(name="file_base64", columnDefinition = "TEXT")
+    private String base64String;
     
-    @Lob
-    @Column(name = "file", columnDefinition = "BYTEA")
+    @Column(name = "content_file_bytes", columnDefinition = "BYTEA")
     private byte[] contentFileBytes; // tipo de dado que será convertido para base64
     
 
@@ -96,11 +95,11 @@ public class ContentModel {
         this.contentLikes = contentLikes;
     }
 
-    public byte[] getBase64String() {
+    public String getBase64String() {
         return base64String;
     }
 
-    public void setBase64String(byte[] base64String) {
+    public void setBase64String(String base64String) {
         this.base64String = base64String;
     }
 

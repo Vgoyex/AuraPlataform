@@ -87,6 +87,7 @@ public class ContentService {
                     Matcher matcher = pattern.matcher(fileName);
                     if (matcher.matches()) {
                         // É vídeo
+                        mediaFile.setContentFileBytes(file.getBytes());
                         // formatVideo(fileName);
                     } else {
                         // Não é vídeo

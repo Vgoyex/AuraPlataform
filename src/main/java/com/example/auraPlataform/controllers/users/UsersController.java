@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.auraPlataform.dto.CompleteUserDto;
-import com.example.auraPlataform.dto.UsersDto;
 import com.example.auraPlataform.models.UsersModel;
 import com.example.auraPlataform.repositories.UsersRepository;
 import com.example.auraPlataform.services.UsersService;
@@ -101,7 +100,7 @@ public class UsersController {
 
     // Put by Id
     @PutMapping("/aura/users/{id}")
-    public ResponseEntity<Object> updateUser(@PathVariable(value="id") UUID id,
+    public ResponseEntity<Object> updateUserById(@PathVariable(value="id") UUID id,
     @RequestBody @Valid CompleteUserDto userDto){
         Optional<UsersModel> userObj = usersRepository.findById(id);
         if(userObj.isEmpty()){
@@ -111,6 +110,19 @@ public class UsersController {
         BeanUtils.copyProperties(userDto, userModel);// Convertendo de DTO para Model
         return ResponseEntity.status(HttpStatus.OK).body(usersRepository.save(userModel));
     }
+
+    @PutMapping("/aura/users-u/{userName}")
+    public ResponseEntity<Object> updateUserByUserName(@PathVariable(value="userName") String userName,
+    @RequestBody @Valid CompleteUserDto userDto){
+        Optional<UsersModel> userObj = usersRepository.findByUserName(userName);
+        if(userObj.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
+        }
+        var userModel = userObj.get();
+        BeanUtils.copyProperties(userDto, userModel);// Convertendo de DTO para Model
+        return ResponseEntity.status(HttpStatus.OK).body(usersRepository.save(userModel));
+    }
+
 
     // Delete by Id
     @DeleteMapping("/aura/users/{id}")
