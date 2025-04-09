@@ -123,7 +123,7 @@ public class ContentService {
         }
         try{
             String cmdCommand = "ffprobe " + fileName + " -show_streams -show_format -print_format json";
-            Process process = Runtime.getRuntime().exec(cmdCommand);
+            Process process = new ProcessBuilder(cmdCommand).start();
             
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder output = new StringBuilder();
