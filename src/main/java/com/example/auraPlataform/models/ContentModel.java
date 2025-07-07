@@ -1,8 +1,11 @@
 package com.example.auraPlataform.models;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,6 +29,29 @@ public class ContentModel {
     private List<String> contentCommentsList;
     private String contentFileName;
     private UUID contentIdUserPost;
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime contentDtCriacao;
+    
+    @LastModifiedDate
+    private LocalDateTime contentDtAlteracao;
+
+
+    public LocalDateTime getContentDtCriacao() {
+        return contentDtCriacao;
+    }
+
+    public void setContentDtCriacao(LocalDateTime contentDtCriacao) {
+        this.contentDtCriacao = contentDtCriacao;
+    }
+
+    public LocalDateTime getContentDtAlteracao() {
+        return contentDtAlteracao;
+    }
+
+    public void setContentDtAlteracao(LocalDateTime contentDtAlteracao) {
+        this.contentDtAlteracao = contentDtAlteracao;
+    }
 
     public String getContentEmailUserPost() {
         return contentEmailUserPost;

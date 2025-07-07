@@ -19,9 +19,9 @@ public class PagesController {
         return "index";// "index" corresponde ao arquivo "index.html"
     }
 
-    @GetMapping("/aura/contentCreate")
+    @GetMapping("/aura/create-content")
     public String getCreateContent(){
-        return "contentCreate";
+        return "create-content";
     }
 
 

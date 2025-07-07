@@ -1,7 +1,11 @@
 package com.example.auraPlataform.models;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import jakarta.persistence.*;
 
@@ -28,6 +32,31 @@ public class UsersModel implements Serializable{
     private String userNeighborhood;
     private String userCity;
     private String userState;
+
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime userDtCriacao;
+    
+    @LastModifiedDate
+    private LocalDateTime userDtAlteracao;
+
+
+    public LocalDateTime getuserDtCriacao() {
+        return userDtCriacao;
+    }
+
+    public void setuserDtCriacao(LocalDateTime userDtCriacao) {
+        this.userDtCriacao = userDtCriacao;
+    }
+
+    public LocalDateTime getuserDtAlteracao() {
+        return userDtAlteracao;
+    }
+
+    public void setuserDtAlteracao(LocalDateTime userDtAlteracao) {
+        this.userDtAlteracao = userDtAlteracao;
+    }
+
 
     public String getUserNickName() {
         return userNickName;

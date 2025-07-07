@@ -1,15 +1,13 @@
 package com.example.auraPlataform.controllers.content;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +27,7 @@ import com.example.auraPlataform.services.ContentService;
 import jakarta.validation.Valid;
 
 @RestController
+@RequestMapping("api/v1/aura")
 public class ContentController {
 
     /*
@@ -40,87 +40,45 @@ public class ContentController {
     @Autowired
     ContentService contentService;
 
-    @GetMapping("/aura/content")
+    @GetMapping("/content")
     public ResponseEntity<List<ContentModel>> getAllContents() {
         return ResponseEntity.status(HttpStatus.OK).body(contentRepository.findAll());
     }
 
-    @GetMapping("/aura/content/{id}")
+    @GetMapping("/contentHome")
+    public ResponseEntity<Object> getContentHomePage(){
+        return ResponseEntity.ok("");
+    }
+
+    @GetMapping("/content/{id}")
     public ResponseEntity<Object> getContent(@PathVariable(value = "id") UUID id) {
         Optional<ContentModel> contentObj = contentRepository.findById(id);
         if (contentObj.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Arquivo não encontrado.");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(contentObj.get());
+        return ResponseEntity.ok().contentType(MediaType.valueOf("video/mp4")).body(contentObj.get().getContentFileBytes());
     }
 
-    @GetMapping("/aura/get-content-front")
-    public ResponseEntity<List<Map<String, String>>> getAllContentFront() {
-        List<ContentModel> files = contentRepository.findAll();
-        List<Map<String, String>> images = new ArrayList<>();
-        // Ao inves de fazer FIND ALL, fazer o get pelo id do creator
-        // select * from tb_content where id_creator = id_creator_search
-        for (ContentModel file : files) {
-            Map<String, String> imageInfo = new HashMap<>();
-            imageInfo.put("name", file.getContentName());
 
-            // Converter o arquivo blob em base64 para exibir no front-end
-            String base64Image = contentService.convertToBase64(file.getContentFileBytes());
-            imageInfo.put("data", "data:" + ";base64," + base64Image);
-            images.add(imageInfo);
-        }
-
-        return ResponseEntity.ok(images);
-    }
-
-    @GetMapping("/aura/get-content-front/{id}")
-    public ResponseEntity<List<Map<String, String>>> getAllContentFrontById(@PathVariable(value = "id") UUID id) {
+    @GetMapping("/get-content-front/{id}")
+    public ResponseEntity<List<ContentModel>> getAllContentFrontById(@PathVariable(value = "id") UUID id) {
         List<ContentModel> files = contentRepository.findByContentIdUserPost(id);
-        List<Map<String, String>> images = new ArrayList<>();
         // Ao inves de fazer FIND ALL, fazer o get pelo id do creator
         // select * from tb_content where id_creator = id_creator_search
-        for (ContentModel file : files) {
-            Map<String, String> imageInfo = new HashMap<>();
-            imageInfo.put("name", file.getContentName());
-
-            // Converter o arquivo blob em base64 para exibir no front-end
-            String base64Image = contentService.convertToBase64(file.getContentFileBytes());
-            imageInfo.put("data", "data:" + ";base64," + base64Image);
-            images.add(imageInfo);
-        }
-
-        return ResponseEntity.ok(images);
+        return ResponseEntity.ok(files);
     }
 
-    @GetMapping("/aura/get-content-front-e/{email}")
-    public ResponseEntity<List<Map<String, String>>> getAllContentFrontByEmailUser(@PathVariable(value = "email") String email) {
+    //! Rever isso aqui !
+    @GetMapping("/get-content-front-e/{email}")
+    public ResponseEntity<List<ContentModel>> getAllContentFrontByEmailUser(@PathVariable(value = "email") String email) {
         List<ContentModel> files = contentRepository.findContentByContentEmailUserPost(email);
-        List<Map<String, String>> images = new ArrayList<>();
-        // Ao inves de fazer FIND ALL, fazer o get pelo id do creator
-        // select * from tb_content where id_creator = id_creator_search
-        for (ContentModel file : files) {
-            Map<String, String> imageInfo = new HashMap<>();
-            imageInfo.put("name", file.getContentName());
-
-            // Converter o arquivo blob em base64 para exibir no front-end
-            String base64Image = contentService.convertToBase64(file.getContentFileBytes());
-            imageInfo.put("data", "data:" + ";base64," + base64Image);
-            images.add(imageInfo);
-        }
-
-        return ResponseEntity.ok(images);
+        return ResponseEntity.ok(files);
     }
-
-    // Teste loadVideo
-    @GetMapping("/aura/teste/loadVideo/{id}")
-    public String loadVideo(){
-        return "";
-    } 
 
 
     // Deprecated
     @Deprecated
-    @PostMapping("/aura/content")
+    @PostMapping("/content")
     public ResponseEntity<Object> postContent(@Valid ContentDto contentDto/**
                                                                            * , @RequestParam("contentFile")*
                                                                            * MultipartFile contentFile
@@ -137,7 +95,8 @@ public class ContentController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(contentObj);
     }
 
-    @PostMapping("/aura/multi-content")
+    //! AQUI
+    @PostMapping("/multi-content")
     public ResponseEntity<String> uploadFiles(@RequestParam("contentFile") List<MultipartFile> files, @Valid ContentDto contentDto) {
         List<ContentModel> contentFiles = contentService.uploadFiles(files);
         StringBuilder responseMessage = new StringBuilder();
@@ -160,7 +119,7 @@ public class ContentController {
     }
 
     // Put by Id
-    @PutMapping("/aura/content/{id}")
+    @PutMapping("/content/{id}")
     public ResponseEntity<Object> updateuser(@PathVariable(value = "id") UUID id,
             @RequestBody @Valid ContentDto contentDto) {
         Optional<ContentModel> contentObj = contentRepository.findById(id);
@@ -173,7 +132,7 @@ public class ContentController {
     }
 
     // Delete by Id
-    @DeleteMapping("/aura/content/{id}")
+    @DeleteMapping("/content/{id}")
     public ResponseEntity<Object> deleteuser(@PathVariable(value = "id") UUID id) {
         Optional<ContentModel> contentObj = contentRepository.findById(id);
         if (contentObj.isEmpty()) {
@@ -185,7 +144,7 @@ public class ContentController {
 
 
     //! Testar pegar metadados do vídeo
-    @GetMapping("/aura/teste_service")
+    @GetMapping("/teste_service")
     public ResponseEntity<Object> testeTTT() {
         //teste passando o caminho do arquivo
         //tem que passar o arquivo no banco e fazer o service de outra maneira

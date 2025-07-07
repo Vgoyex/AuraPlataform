@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.auraPlataform.dto.CompleteUserDto;
 import com.example.auraPlataform.models.UsersModel;
@@ -27,6 +29,7 @@ import java.util.Optional;
 
 
 @RestController
+@RequestMapping("api/v1/aura")
 public class UsersController {
 
     /*
@@ -38,35 +41,41 @@ public class UsersController {
     @Autowired
     UsersService usersService;
 
-    @GetMapping("/aura/users")
+    @GetMapping("/users")
     public ResponseEntity<List<UsersModel>> getAllUsers(){
+        System.out.println("\n Usuário Controller \n");
         return ResponseEntity.status(HttpStatus.OK).body(usersRepository.findAll());
     }
 
     // Get By Id
-    @GetMapping("/aura/users/{id}")
+    @GetMapping("/users/{id}")
     public ResponseEntity<Object> getUser(@PathVariable(value="id") UUID id){
+        System.out.println("\n Usuário Controller \n");
         Optional<UsersModel> userObj = usersService.getById(id);
+        if(userObj == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID do usuário incorreto.");
+        }
         if(userObj.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(userObj.get());
     }
 
     // Será importante para pesquisa na barra de pesquisas
-    @GetMapping("/aura/users/profile/{userName}")
+    @GetMapping("/users/profile/{userName}")
     public ResponseEntity<Object> getUserByName(@PathVariable(value="userName") String userName){
+        System.out.println("\n Usuário Controller \n");
         Optional<UsersModel> userObj = usersService.getByUserName(userName);
         if(userObj == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário não encontrado.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(userObj.get());
     }
 
-    @PostMapping("/aura/users")
+    @PostMapping("/users")
     public ResponseEntity<Object> postUser(@RequestBody @Valid CompleteUserDto usersDto){
         //! Fazer lógica para salvar a senha
-
+        System.out.println("\n Usuário Controller \n");
         var usersModel = new UsersModel();
         BeanUtils.copyProperties(usersDto, usersModel);// Convertendo de DTO para Model
         boolean errorMail = usersService.getByEmailBoolean(usersModel.getUserEmail());
@@ -99,24 +108,26 @@ public class UsersController {
     // }
 
     // Put by Id
-    @PutMapping("/aura/users/{id}")
+    @PutMapping("/users/{id}")
     public ResponseEntity<Object> updateUserById(@PathVariable(value="id") UUID id,
     @RequestBody @Valid CompleteUserDto userDto){
+        System.out.println("\n Usuário Controller \n");
         Optional<UsersModel> userObj = usersRepository.findById(id);
         if(userObj.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
         }
         var userModel = userObj.get();
         BeanUtils.copyProperties(userDto, userModel);// Convertendo de DTO para Model
         return ResponseEntity.status(HttpStatus.OK).body(usersRepository.save(userModel));
     }
 
-    @PutMapping("/aura/users-u/{userName}")
+    @PutMapping("/users-u/{userName}")
     public ResponseEntity<Object> updateUserByUserName(@PathVariable(value="userName") String userName,
     @RequestBody @Valid CompleteUserDto userDto){
+        System.out.println("\n Usuário Controller \n");
         Optional<UsersModel> userObj = usersRepository.findByUserName(userName);
         if(userObj.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
         }
         var userModel = userObj.get();
         BeanUtils.copyProperties(userDto, userModel);// Convertendo de DTO para Model
@@ -125,24 +136,26 @@ public class UsersController {
 
 
     // Delete by Id
-    @DeleteMapping("/aura/users/{id}")
+    @DeleteMapping("/users/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable(value="id") UUID id){
+        System.out.println("\n Usuário Controller \n");
         Optional<UsersModel> userObj = usersRepository.findById(id);
         if(userObj.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
         }
         usersRepository.delete(userObj.get());
         return ResponseEntity.status(HttpStatus.OK).body("Usuário excluído com sucesso");
     }
 
     // Delete by UserName
-    @DeleteMapping("/aura/users/{userName}")
+    @DeleteMapping("/users/{userName}")
     public ResponseEntity<Object> deleteUserByUserName(@PathVariable(value="userName") String userName){
+        System.out.println("\n Usuário Controller \n");
         Optional<UsersModel> userObj = usersRepository.findByUserName(userName);
         if(userObj.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
         }
-        usersRepository.delete(userObj.get());   
+        usersRepository.delete(userObj.get());
 
         return ResponseEntity.status(HttpStatus.OK).body("Usuário excluído com sucesso");
     }

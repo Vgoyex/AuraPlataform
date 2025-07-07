@@ -1,4 +1,4 @@
-package com.example.auraPlataform.configA;
+package com.example.auraPlataform.config;
 // package com.example.garPlataform.config;
 
 // import org.springframework.context.annotation.Bean;
