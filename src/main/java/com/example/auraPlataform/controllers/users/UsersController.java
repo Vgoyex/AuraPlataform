@@ -32,9 +32,6 @@ import java.util.Optional;
 @RequestMapping("api/v1/aura")
 public class UsersController {
 
-    /*
-     * Users  
-    */
     @Autowired
     UsersRepository usersRepository;
 
@@ -43,14 +40,12 @@ public class UsersController {
 
     @GetMapping("/users")
     public ResponseEntity<List<UsersModel>> getAllUsers(){
-        System.out.println("\n Usuário Controller \n");
         return ResponseEntity.status(HttpStatus.OK).body(usersRepository.findAll());
     }
 
-    // Get By Id
+    
     @GetMapping("/users/{id}")
     public ResponseEntity<Object> getUser(@PathVariable(value="id") UUID id){
-        System.out.println("\n Usuário Controller \n");
         Optional<UsersModel> userObj = usersService.getById(id);
         if(userObj == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID do usuário incorreto.");
@@ -64,7 +59,6 @@ public class UsersController {
     // Será importante para pesquisa na barra de pesquisas
     @GetMapping("/users/profile/{userName}")
     public ResponseEntity<Object> getUserByName(@PathVariable(value="userName") String userName){
-        System.out.println("\n Usuário Controller \n");
         Optional<UsersModel> userObj = usersService.getByUserName(userName);
         if(userObj == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
@@ -74,8 +68,6 @@ public class UsersController {
 
     @PostMapping("/users")
     public ResponseEntity<Object> postUser(@RequestBody @Valid CompleteUserDto usersDto){
-        //! Fazer lógica para salvar a senha
-        System.out.println("\n Usuário Controller \n");
         var usersModel = new UsersModel();
         BeanUtils.copyProperties(usersDto, usersModel);// Convertendo de DTO para Model
         boolean errorMail = usersService.getByEmailBoolean(usersModel.getUserEmail());
@@ -92,9 +84,9 @@ public class UsersController {
             bodyReturn.put("success", "Usuário criado com Sucesso!");
         }
 
-        ResponseEntity.status(HttpStatus.CREATED).body(usersRepository.save(usersModel));
+        return ResponseEntity.status(HttpStatus.CREATED).body(usersRepository.save(usersModel));
         // return ResponseEntity.status(HttpStatus.OK).body(usersModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Usuário criado com Sucesso!");
+        // return ResponseEntity.status(HttpStatus.CREATED).body("Usuário criado com Sucesso!");
     }
 
     //! CASO SEJA VIA FORM
@@ -107,7 +99,6 @@ public class UsersController {
     //     return ResponseEntity.status(HttpStatus.OK).body(usersModel);
     // }
 
-    // Put by Id
     @PutMapping("/users/{id}")
     public ResponseEntity<Object> updateUserById(@PathVariable(value="id") UUID id,
     @RequestBody @Valid CompleteUserDto userDto){
@@ -117,7 +108,7 @@ public class UsersController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
         }
         var userModel = userObj.get();
-        BeanUtils.copyProperties(userDto, userModel);// Convertendo de DTO para Model
+        BeanUtils.copyProperties(userDto, userModel);
         return ResponseEntity.status(HttpStatus.OK).body(usersRepository.save(userModel));
     }
 
@@ -130,15 +121,12 @@ public class UsersController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
         }
         var userModel = userObj.get();
-        BeanUtils.copyProperties(userDto, userModel);// Convertendo de DTO para Model
+        BeanUtils.copyProperties(userDto, userModel);
         return ResponseEntity.status(HttpStatus.OK).body(usersRepository.save(userModel));
     }
-
-
-    // Delete by Id
+    
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable(value="id") UUID id){
-        System.out.println("\n Usuário Controller \n");
         Optional<UsersModel> userObj = usersRepository.findById(id);
         if(userObj.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
@@ -147,10 +135,8 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.OK).body("Usuário excluído com sucesso");
     }
 
-    // Delete by UserName
-    @DeleteMapping("/users/{userName}")
+    @DeleteMapping("/users-n/{userName}")
     public ResponseEntity<Object> deleteUserByUserName(@PathVariable(value="userName") String userName){
-        System.out.println("\n Usuário Controller \n");
         Optional<UsersModel> userObj = usersRepository.findByUserName(userName);
         if(userObj.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
@@ -159,6 +145,4 @@ public class UsersController {
 
         return ResponseEntity.status(HttpStatus.OK).body("Usuário excluído com sucesso");
     }
-
-
 }

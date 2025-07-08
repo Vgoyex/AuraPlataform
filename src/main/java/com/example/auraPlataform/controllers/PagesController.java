@@ -25,4 +25,10 @@ public class PagesController {
     }
 
 
+    // template para qualquer video selecionado
+    @GetMapping("/aura/video")
+    public String getVideo(){
+        return "video";
+    }
+
 }

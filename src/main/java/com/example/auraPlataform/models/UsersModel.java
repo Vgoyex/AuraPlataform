@@ -6,16 +6,17 @@ import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name="Tb_Users")
+@EntityListeners(AuditingEntityListener.class)
 public class UsersModel implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) //Poderia substituir AUTO por UUID
 
-    //* Colunas no Banco(MySql nesse caso)
     private UUID idUser;
     private String userNickName; // Nome de perfil
     private String userName; // Vai ser o @

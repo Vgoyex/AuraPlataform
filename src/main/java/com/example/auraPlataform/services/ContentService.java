@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -37,64 +38,60 @@ public class ContentService {
         return findContentByUserIdList;
     }
 
-    public String convertToBase64(byte[] obj){
-        if(obj != null){
-            try{
+    public String convertToBase64(byte[] obj) {
+        if (obj != null) {
+            try {
                 String base64String = Base64.getEncoder().encodeToString(obj);
                 // byte[] base64Byte = Base64.getDecoder().decode(base64String);
                 return base64String;
-            }catch(Exception error){
+            } catch (Exception error) {
                 throw new RuntimeException("Erro ao converter para base64");
             }
         }
         return null;
     }
 
-    public String convertFromBase64(byte[] obj){
+    public String convertFromBase64(byte[] obj) {
         String base64String = Base64.getEncoder().encodeToString(obj);
-        if(base64String != null){
+        if (base64String != null) {
             return base64String;
         }
         return null;
     }
 
-    public ContentModel convertFormFileToByte(ContentDto contentDto){
+    public ContentModel convertFormFileToByte(ContentDto contentDto) {
         var contentObj = new ContentModel();
         // Converte tipo de arquivo recebido pelo form para bytes
-        try{
+        try {
             byte[] contentFile = contentDto.contentFile().getInputStream().readAllBytes();
             contentObj.setContentFileBytes(contentFile);
             BeanUtils.copyProperties(contentDto, contentObj);// Convertendo de DTO para Model
-        }catch(IOException error){
+        } catch (IOException error) {
             throw new RuntimeException("Erro ao converter o arquivo ", error);
         }
         return contentObj;
     }
 
-    public List<ContentModel> uploadFiles(/*@RequestParam("files") */List<MultipartFile> files){
+    public List<ContentModel> uploadFiles(/* @RequestParam("files") */List<MultipartFile> files) {
         StringBuilder responseMessage = new StringBuilder();
         List<ContentModel> contentFiles = new ArrayList<ContentModel>();
         for (MultipartFile file : files) {
             try {
                 ContentModel mediaFile = new ContentModel();
                 mediaFile.setContentFileName(file.getOriginalFilename());
-                
-                if(mediaFile.getContentFileName() != null){
-                    // Verifica se o nome do arquivo indica que é um vídeo
-                    String fileName = mediaFile.getContentFileName();
-                    String regex = ".*\\.(mp4|mov)$"; // Verifica extensões no final da string
-                    Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-                    Matcher matcher = pattern.matcher(fileName);
-                    if (matcher.matches()) {
-                        // É vídeo
-                        mediaFile.setContentFileBytes(file.getBytes());
-                        // formatVideo(fileName);
-                    } else {
-                        // Não é vídeo
+                boolean validVideo;
+                if (mediaFile.getContentFileName() != null) {
+                    validVideo = isVideo(mediaFile.getContentFileName());
+                    if(validVideo == true){
+                        //é video, então separar streams
+                        InputStream input = file.getInputStream();
+                        byte[] dados = input.readAllBytes();
+                        mediaFile.setContentFileBytes(dados);
+                    }else{
                         mediaFile.setContentFileBytes(file.getBytes());
                     }
                 }
-                
+
                 mediaFile.setContentDescription("");
                 contentFiles.add(mediaFile);
                 responseMessage.append("Arquivo ").append(file.getOriginalFilename()).append(" salvo com sucesso!\n");
@@ -103,44 +100,51 @@ public class ContentService {
                 responseMessage.append("Erro ao salvar o arquivo " + file.getOriginalFilename());
             }
         }
-        if(contentFiles.isEmpty()){
+        if (contentFiles.isEmpty()) {
             return null;
         }
-        return contentFiles;    
+        return contentFiles;
     }
 
-    //  Empty
-    @Deprecated
-    public String formatVideo(String fileName){
-         
-        return "";
+    public boolean isVideo(String fileName) {
+        // Verifica se o nome do arquivo indica que é um vídeo
+        String regex = ".*\\.(mp4|mov)$"; // Verifica extensões no final da string
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(fileName);
+        if (matcher.matches()) {
+            // É vídeo
+            return true;
+        } else {
+            // Não é vídeo
+            return false;
+        }
+  
     }
-    
-    public JsonNode getVideoMetaData(String fileName){
-        if(fileName == null){
+
+    public JsonNode getVideoMetaData(String fileName) {
+        if (fileName == null) {
             // Nome do arquivo inválido/não existe.
             return null;
         }
-        try{
+        try {
             String cmdCommand = "ffprobe " + fileName + " -show_streams -show_format -print_format json";
             Process process = new ProcessBuilder(cmdCommand).start();
-            
+
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder output = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 output.append(line).append("\n");
             }
-            
+
             process.waitFor();
             process.getOutputStream().close();
-            
 
             ObjectMapper objectMapper = new ObjectMapper();
             // return objectMapper.readTree(output.toString());
             JsonNode jsonNode = objectMapper.readTree(output.toString());
             return jsonNode;
-        }catch(IOException | InterruptedException  err){
+        } catch (IOException | InterruptedException err) {
             err.printStackTrace();
             return null;
         }
